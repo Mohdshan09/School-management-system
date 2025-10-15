@@ -11,6 +11,9 @@ const Navbar = () => {
         </div>
 
         {/* Icon and User */}
+        <div>
+            <div></div>
+        </div>
     </div>
   )
 }
