@@ -13,6 +13,10 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        heading: ["Poppins", "sans-serif"],
+      },
       colors: {
         lamaSky: "#C3EBFA",
         lamaSkyLight: "#EDF9FD",
@@ -20,7 +24,7 @@ const config: Config = {
         lamaPurpleLight: "#F1F0FF",
         lamaYellow: "#FAE27C",
         lamaBlue: "#40667D",
-        lamapink:"#D2BDCD",
+        lamapink: "#D2BDCD",
         lamaYellowLight: "#FEFCE8",
       },
     },

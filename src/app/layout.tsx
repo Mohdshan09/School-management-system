@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-
 const inter = Inter({ subsets: ["latin"] });
+import ReactQueryProvider from "./providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "BHN ENGLISH HR SEC SCHOOL DASHBOARD",
@@ -17,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ReactQueryProvider>
+          {children}
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }

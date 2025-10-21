@@ -1,179 +1,353 @@
 "use client";
-import React, { useState } from "react";
-import { Eye, EyeOff, ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
-function LoginInterface({ onForgotPassword }: { onForgotPassword: any }) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+export default function LoginPage() {
+  // form states
+  const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const router = useRouter();
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [schoolId, setSchoolId] = useState("");
 
-  const handleSubmit = () => {
-    console.log("Login submitted:", { email, password, rememberMe });
+  const LoginMutation = useMutation({
+    mutationFn: async ({
+      studentId,
+      password,
+    }: {
+      studentId: string;
+      password: string;
+    }) => {
+      // mock API call — replace with your real endpoint
+    },
+  });
+
+  const ForgotPasswordMutation = useMutation({
+    mutationFn: async ({
+      resetEmail,
+      schoolId,
+    }: {
+      resetEmail: string;
+      schoolId: string;
+    }) => {
+      //mock API call — replace with your real endpoint
+    },
+  });
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    LoginMutation.mutate({ studentId, password });
   };
 
-  const forgotPassword = () => {
-    router.push("/forgot-password");
+  const handleForgotPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    ForgotPasswordMutation.mutate({ resetEmail, schoolId });
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex items-center justify-center px-4 overflow-hidden">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-4 sm:p-6 my-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-        {/* Logo */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex items-center gap-2">
-           <Image src={"/logo_02.jpg"} alt="logo" width={35} height={35}/>
-            <div>
-              <div className="font-bold text-sm sm:text-base">BHN ENGLISH HR SEC SCHOOL</div>
-              <div className="text-xs text-gray-500">LOGIN PORTAL</div>
+    <div className="h-screen w-screen bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center p-8 overflow-hidden">
+      <div className="bg-stone-100  shadow-4xl w-full max-w-5xl h-[85vh] max-h-[700px] grid md:grid-cols-2 overflow-hidden">
+        {/* Left Section - Illustration */}
+        <div className="px-8 py-10 flex flex-col">
+          <h1 className="text-2xl font-bold text-gray-900 mb-8">Mentorly</h1>
+
+          <div className="flex-1 flex items-center justify-center relative">
+            <div className="relative w-72 h-72">
+              {/* Badges */}
+              <div className="absolute top-2 right-0 bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-10">
+                2.3M Students
+              </div>
+              <div className="absolute bottom-12 -left-2 bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-10">
+                834 Schools
+              </div>
+
+              {/* Central Illustration */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-white rounded-xl shadow-xl flex items-center justify-center">
+                <Image
+                  src={"/bulb-icon.png"}
+                  alt="bulb"
+                  width={150}
+                  height={150}
+                />
+              </div>
+
+              {/* Floating Icons */}
+              <div className="absolute top-4 left-8 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                  <path d="M12 6v6l4 2" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </div>
+
+              <div className="absolute top-20 right-2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 8h10M7 12h10M7 16h10"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+
+              <div className="absolute bottom-20 -left-2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              <div className="absolute bottom-10 right-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <rect
+                    x="3"
+                    y="3"
+                    width="18"
+                    height="18"
+                    rx="2"
+                    strokeWidth="2"
+                  />
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                  <path
+                    d="M21 15l-5-5L5 21"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Welcome Text */}
-        <div className="mb-3 sm:mb-4">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-1">
-            Welcome Back!
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-600">
-            It's good to have you back on lawyeredup, kindly sign in to your
-            account below
-          </p>
-        </div>
-
-        {/* Form */}
-        <div className="space-y-3">
-          {/* Email Input */}
-          <div>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email"
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-xs sm:text-sm"
-            />
-          </div>
-
-          {/* Password Input */}
-          <div>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-xs sm:text-sm pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          {/* Feature Icons */}
+          <div className="flex justify-around pt-6">
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg
+                className="w-7 h-7 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+                <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
+                <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
+                <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
+                <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
+              </svg>
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg
+                className="w-7 h-7 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="3" strokeWidth="2" />
+                <path d="M12 1v6m0 6v6M23 12h-6m-6 0H1" strokeWidth="2" />
+              </svg>
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg
+                className="w-7 h-7 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg
+                className="w-7 h-7 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg
+                className="w-7 h-7 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
           </div>
+        </div>
 
-          {/* Remember Me & Forgot Password */}
-          <div className="flex items-center justify-between text-xs sm:text-sm flex-wrap gap-2">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
-              />
-              <span className="text-gray-700">Remember me</span>
-            </label>
-            <button
-              onClick={() => forgotPassword()}
-              className="text-teal-700 hover:text-teal-800 font-medium"
-            >
-              Forgot Password?
+        {/* Right Section - Login Form */}
+        <div className="bg-white px-10 py-10 flex flex-col justify-center relative">
+          <div className="absolute top-6 right-6">
+            <button className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+              <svg
+                className="w-4 h-4 text-gray-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <circle cx="10" cy="5" r="1.5" />
+                <circle cx="10" cy="10" r="1.5" />
+                <circle cx="10" cy="15" r="1.5" />
+              </svg>
             </button>
           </div>
 
-          {/* Sign In Button */}
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 sm:py-3 rounded-lg transition-colors text-xs sm:text-sm"
-          >
-            Sign in
-          </button>
+          <div className="max-w-sm mx-auto w-full">
+            {/* CHANGE: Conditional rendering - show forgot password form or login form */}
+            {!isForgotPassword ? (
+              // Login Form
+              <>
+                <Image src={"/logo_02.jpg"} alt="logo" width={60} height={60} />
+                <h2 className="text-gray-600 text-md font-bold mb-8">
+                  BHN ENGLISH HR SEC SCHOOL, Gariaband
+                </h2>
 
-          {/* Divider */}
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-xs sm:text-sm">
-              <span className="px-4 bg-white text-gray-500">OR</span>
-            </div>
+                <div className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter your student ID"
+                      value={studentId}
+                      onChange={(e) => setStudentId(e.target.value)}
+                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      type="password"
+                      required
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={LoginMutation.isPending}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30 text-sm"
+                  >
+                    {LoginMutation.isPending ? "Logging in..." : "Login"}
+                  </button>
+
+                  <div className="text-center mt-4">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsForgotPassword(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                    >
+                      Forgot Password?
+                    </a>
+                  </div>
+                </div>
+              </>
+            ) : (
+              // CHANGE: Forgot Password Form
+              <>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                  Forgot Password
+                </h2>
+                <p className="text-gray-600 text-sm mb-8">
+                  Enter your email or student ID to receive a password reset
+                  link.
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Enter your email"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Enter your school id"
+                      value={schoolId}
+                      onChange={(e) => setSchoolId(e.target.value)}
+                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={ForgotPasswordMutation.isPending}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30 text-sm"
+                  >
+                    {ForgotPasswordMutation.isPending
+                      ? "Sending..."
+                      : "Send Link to Change Password"}
+                  </button>
+
+                  <div className="text-center mt-4">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsForgotPassword(false);
+                      }}
+                      className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                    >
+                      Back to Login
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-
-          {/* Google Sign In */}
-          <button
-            type="button"
-            className="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 py-2 sm:py-3 rounded-lg transition-colors text-xs sm:text-sm"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M19.8 10.2273C19.8 9.51819 19.7364 8.83637 19.6182 8.18182H10.2V12.05H15.6109C15.3818 13.3 14.6727 14.3591 13.6045 15.0682V17.5773H16.8273C18.7091 15.8364 19.8 13.2727 19.8 10.2273Z"
-                fill="#4285F4"
-              />
-              <path
-                d="M10.2 20C12.9 20 15.1727 19.1045 16.8273 17.5773L13.6045 15.0682C12.7091 15.6682 11.5636 16.0227 10.2 16.0227C7.59545 16.0227 5.38182 14.2636 4.58182 11.9H1.25455V14.4909C2.90909 17.7591 6.30909 20 10.2 20Z"
-                fill="#34A853"
-              />
-              <path
-                d="M4.58182 11.9C4.38182 11.3 4.26818 10.6591 4.26818 10C4.26818 9.34091 4.38182 8.7 4.58182 8.1V5.50909H1.25455C0.572727 6.85909 0.181818 8.38636 0.181818 10C0.181818 11.6136 0.572727 13.1409 1.25455 14.4909L4.58182 11.9Z"
-                fill="#FBBC04"
-              />
-              <path
-                d="M10.2 3.97727C11.6864 3.97727 13.0227 4.48182 14.0727 5.47273L16.9364 2.60909C15.1682 0.990909 12.8955 0 10.2 0C6.30909 0 2.90909 2.24091 1.25455 5.50909L4.58182 8.1C5.38182 5.73636 7.59545 3.97727 10.2 3.97727Z"
-                fill="#E94235"
-              />
-            </svg>
-            <span className="text-gray-700 font-medium">
-              Continue with Google
-            </span>
-          </button>
-
-          {/* Sign Up Link */}
-          <p className="text-center text-xs sm:text-sm text-gray-600 mt-3">
-            Don't have an account?{" "}
-            <a
-              href="#"
-              className="text-teal-700 hover:text-teal-800 font-medium"
-            >
-              Create now
-            </a>
-          </p>
-
-          {/* Terms */}
-          <p className="text-center text-xs text-gray-500 mt-2 leading-relaxed">
-            By signing in, you agree to{" "}
-            <a href="#" className="text-teal-700 hover:underline">
-              Terms of Use
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-teal-700 hover:underline">
-              Privacy Policy
-            </a>
-          </p>
         </div>
       </div>
     </div>
   );
 }
-
-export default LoginInterface;
