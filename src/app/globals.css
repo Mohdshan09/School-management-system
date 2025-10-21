@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar globally */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html, body {
+  overflow: auto;
+}
+
+
 body, html {
   margin: 0;
   padding: 0;
@@ -52,4 +62,19 @@ body, html {
     scrollbar-width: thin;
     scrollbar-color: #d1d5db transparent;
   }
+}
+
+.react-calendar {
+  width: 100% !important;
+  border: none !important;
+  font-family: "Inter", sans-serif !important;
+}
+
+.react-calendar__navigation__label__labelText {
+  font-weight: 600;
+}
+
+.react-calendar__tile--active {
+  background-color: #c3ebfa !important;
+  color: black !important;
 }
