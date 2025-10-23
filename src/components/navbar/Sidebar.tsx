@@ -1,5 +1,6 @@
 import React from "react";
 import { X, ChevronRight, LayoutDashboard } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar({
   sidebarOpen,
@@ -8,6 +9,7 @@ export default function Sidebar({
   itemDetails,
   examinationMenuItems,
 }: any) {
+  const router = useRouter();
   return (
     <div
       className={`fixed top-[64px] left-0 h-[calc(100vh-64px)] w-80 bg-white shadow-lg border-r border-gray-200 transform transition-transform duration-300 z-40 ${
@@ -36,7 +38,9 @@ export default function Sidebar({
       <div className="h-[calc(100%-65px)]">
         {selectedItem === "Dashboard" && (
           <div className="p-4">
-            <button className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-blue-50 rounded-lg border border-gray-200 transition-all">
+            <button
+            onClick={() => router.push("/admin") }
+             className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-blue-50 rounded-lg border border-gray-200 transition-all">
               <div className="flex items-center space-x-3">
                 <LayoutDashboard className="w-5 h-5 text-blue-600" />
                 <span className="text-sm font-medium text-gray-700">
