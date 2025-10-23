@@ -1,7 +1,7 @@
 
 const page = () => {
   return (
-    <div> Teacher page</div>
+    <div>page</div>
   )
 }
 

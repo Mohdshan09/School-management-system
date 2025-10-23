@@ -7,12 +7,14 @@
   display: none;
 }
 
-html, body {
+html,
+body {
   overflow: auto;
 }
 
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -20,39 +22,157 @@ body, html {
 
 }
 
+.myshadow {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-btn-group:first-child {
+  display: none !important
+}
+
+.rbc-toolbar-label {
+  text-align: right !important;
+  padding: 0px 20px !important;
+}
+
+.rbc-btn-group:last-child {
+  font-size: 13px !important;
+}
+
+.rbc-btn-group:last-child button {
+  border: none !important;
+  background-color: linear-gradient(to right, #2563EB, #B0B0B0) !important;
+  margin-left: 2px;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #dbdafe !important;
+  box-shadow: none !important;
+}
+
+.rbc-time-view {
+  border-color: #eee !important;
+}
+
+
+
+
+.rbc-time-view {
+  border-color: #eee !important;
+}
+
+.rbc-time-header {
+  display: none !important;
+}
+
+.rbc-time-content {
+  border: none !important;
+}
+
+.rbc-time-gutter.rbc-time-column {
+  font-size: 12px !important;
+}
+
+.rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
+  padding: 0px 20px !important;
+}
+
+.rbc-timeslot-group {
+  background-color: #fff !important;
+}
+
+.rbc-day-slot {
+  font-size: 14px !important;
+}
+
+.rbc-event {
+  border: none !important;
+  color: black !important;
+  padding: 10px !important;
+  margin: 5px !important;
+  width: 99% !important;
+  height: 8% !important
+}
+
+.rbc-event:nth-child(1) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(2) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(3) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(4) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(5) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(6) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(7) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event:nth-child(8) {
+  background-color: #fff !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.rbc-event-label {
+  color: gray !important;
+  margin-bottom: 5px;
+}
+
 /* Custom Scrollbar Styles */
 @layer utilities {
+
   /* Webkit browsers (Chrome, Safari, Edge) */
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scrollbar-track-transparent::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scrollbar-track-gray-100::-webkit-scrollbar-track {
     background: #f3f4f6;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
   }
-  
+
   .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
     background: #d1d5db;
   }
-  
+
   .scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
     background: #9ca3af;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
   }
