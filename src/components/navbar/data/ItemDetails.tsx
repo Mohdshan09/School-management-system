@@ -77,6 +77,6 @@ export const itemDetails = {
     title: "Examination",
     icon: <PencilLine className="w-5 h-5" />,
     desc: "Manage exams and results.",
-    visible: ["admin", "teacher"],
+    visible: ["admin", "teacher","student"],
   },
 };

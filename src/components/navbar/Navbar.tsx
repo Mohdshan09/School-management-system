@@ -56,7 +56,7 @@ export default function Navbar() {
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 text-sm font-medium transition"
             >
               <Menu className="w-4 h-4" />
-              <span>Explore</span>
+              <span>explore</span>
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-300 shadow-lg rounded-xl p-4 grid grid-cols-3 gap-2 z-50">
