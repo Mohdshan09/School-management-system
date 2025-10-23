@@ -7,12 +7,14 @@
   display: none;
 }
 
-html, body {
+html,
+body {
   overflow: auto;
 }
 
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -20,39 +22,44 @@ body, html {
 
 }
 
+.myshadow {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
 /* Custom Scrollbar Styles */
 @layer utilities {
+
   /* Webkit browsers (Chrome, Safari, Edge) */
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scrollbar-track-transparent::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scrollbar-track-gray-100::-webkit-scrollbar-track {
     background: #f3f4f6;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
   }
-  
+
   .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
     background: #d1d5db;
   }
-  
+
   .scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
     background: #9ca3af;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
   }
