@@ -3,10 +3,12 @@ import React from "react";
 export default function DropdownItem({
   icon,
   label,
+  href,
   onClick,
 }: {
   icon: React.ReactNode;
   label: string;
+  href: string;
   onClick: () => void;
 }) {
   return (

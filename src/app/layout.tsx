@@ -7,6 +7,9 @@ import ReactQueryProvider from "./providers/QueryProvider";
 export const metadata: Metadata = {
   title: "BHN ENGLISH HR SEC SCHOOL DASHBOARD",
   description: "Next.js School Management System",
+  icons: {
+    icon: "/logo_02.jpg"
+  }
 };
 
 export default function RootLayout({

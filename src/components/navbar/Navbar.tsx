@@ -7,8 +7,11 @@ import Sidebar from "./Sidebar";
 import { itemDetails } from "./data/ItemDetails";
 import { examinationMenuItems } from "./data/ExamMenu";
 import { role } from "@/lib/data";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Navbar() {
+  const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<
@@ -22,7 +25,9 @@ export default function Navbar() {
         {/* Logo + Title */}
         <div className="flex items-center space-x-4">
           <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-            B
+            <Link href={"/admin"}>
+              B
+            </Link>
           </div>
           <h1 className="text-sm font-bold text-gray-700">
             BHN HR SEC ENGLISH SCHOOL
@@ -56,21 +61,28 @@ export default function Navbar() {
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 text-sm font-medium transition"
             >
               <Menu className="w-4 h-4" />
-              <span>explore</span>
+              <span>Explore</span>
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-300 shadow-lg rounded-xl p-4 grid grid-cols-3 gap-2 z-50">
                 {Object.entries(itemDetails)
                   .filter(([_, item]) => item.visible.includes(role)) //
-                  .map(([label, { icon }]) => (
+                  .map(([label, { icon, href }]) => (
                     <DropdownItem
+
                       key={label}
                       icon={icon}
                       label={label}
+                      href={href}
                       onClick={() => {
-                        setSelectedItem(label as keyof typeof itemDetails);
-                        setSidebarOpen(true);
-                        setDropdownOpen(false);
+                        if (href.length > 1) {
+                          router.push(href)
+                          setDropdownOpen(false);
+                        } else {
+                          setSelectedItem(label as keyof typeof itemDetails);
+                          setSidebarOpen(true);
+                          setDropdownOpen(false);
+                        }
                       }}
                     />
                   ))}

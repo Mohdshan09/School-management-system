@@ -53,7 +53,7 @@ export const calendarEvents = [
 
 // TEMPORARY DATA
 
-export let role = "student";
+export let role = "admin";
 
 export const teachersData = [
   {
@@ -580,6 +580,7 @@ export const examsData = [
     class: "1A",
     teacher: "Martha Morris",
     date: "2025-01-01",
+    type: "Annual",
   },
   {
     id: 2,
@@ -587,6 +588,7 @@ export const examsData = [
     class: "2A",
     teacher: "Randall Garcia",
     date: "2025-01-01",
+    type: "Half-Yearly",
   },
   {
     id: 3,
@@ -594,6 +596,7 @@ export const examsData = [
     class: "3A",
     teacher: "Myrtie Scott",
     date: "2025-01-01",
+    type: "Annual",
   },
   {
     id: 4,
@@ -601,6 +604,7 @@ export const examsData = [
     class: "1B",
     teacher: "Alvin Swanson",
     date: "2025-01-01",
+    type: "Half-Yearly",
   },
   {
     id: 5,
@@ -608,6 +612,7 @@ export const examsData = [
     class: "4A",
     teacher: "Mabelle Wallace",
     date: "2025-01-01",
+    type: "Annual",
   },
   {
     id: 6,
@@ -615,6 +620,7 @@ export const examsData = [
     class: "5A",
     teacher: "Dale Thompson",
     date: "2025-01-01",
+    type: "Annual",
   },
   {
     id: 7,
@@ -622,6 +628,7 @@ export const examsData = [
     class: "6A",
     teacher: "Allie Conner",
     date: "2025-01-01",
+    type: "Half-Yearly",
   },
   {
     id: 8,
@@ -629,6 +636,7 @@ export const examsData = [
     class: "6B",
     teacher: "Hunter Fuller",
     date: "2025-01-01",
+    type: "Annual",
   },
   {
     id: 9,
@@ -636,6 +644,7 @@ export const examsData = [
     class: "7A",
     teacher: "Lois Lindsey",
     date: "2025-01-01",
+    type: "Half-Yearly",
   },
   {
     id: 10,
@@ -643,8 +652,10 @@ export const examsData = [
     class: "8A",
     teacher: "Vera Soto",
     date: "2025-01-01",
+    type: "Annual",
   },
 ];
+
 
 export const assignmentsData = [
   {
@@ -827,143 +838,83 @@ export const eventsData = [
     id: 1,
     title: "Lake Trip",
     class: "1A",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    startDate: "2025-01-01",
+    endDate: "2025-01-02", // 2-day event
   },
   {
     id: 2,
     title: "Picnic",
     class: "2A",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    startDate: "2025-01-03",
+    endDate: "2025-01-04", // 2-day event
   },
   {
     id: 3,
     title: "Beach Trip",
     class: "3A",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    startDate: "2025-01-05",
+    endDate: "2025-01-05", // single-day
+    startTime: "09:00",
+    endTime: "12:00",
   },
   {
     id: 4,
-    title: "Museum Trip",
+    title: "Museum Visit",
     class: "4A",
-    date: "2025-01-01",
+    startDate: "2025-01-06",
+    endDate: "2025-01-06",
     startTime: "10:00",
-    endTime: "11:00",
+    endTime: "13:00",
   },
   {
     id: 5,
     title: "Music Concert",
     class: "5A",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    startDate: "2025-01-08",
+    endDate: "2025-01-08",
+    startTime: "17:00",
+    endTime: "20:00",
   },
   {
     id: 6,
-    title: "Magician Show",
-    class: "1B",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    title: "Art Festival",
+    class: "6A",
+    startDate: "2025-01-10",
+    endDate: "2025-01-11", // 2-day event
   },
   {
     id: 7,
-    title: "Lake Trip",
-    class: "2B",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    title: "Science Fair",
+    class: "7A",
+    startDate: "2025-01-13",
+    endDate: "2025-01-13",
+    startTime: "09:30",
+    endTime: "14:00",
   },
   {
     id: 8,
-    title: "Cycling Race",
-    class: "3B",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    title: "Sports Tournament",
+    class: "8A",
+    startDate: "2025-01-15",
+    endDate: "2025-01-17", // 3-day event
   },
   {
     id: 9,
-    title: "Art Exhibition",
-    class: "4B",
-    date: "2025-01-01",
+    title: "Cultural Day",
+    class: "9A",
+    startDate: "2025-01-18",
+    endDate: "2025-01-18",
     startTime: "10:00",
-    endTime: "11:00",
+    endTime: "15:00",
   },
   {
     id: 10,
-    title: "Sports Tournament",
-    class: "5B",
-    date: "2025-01-01",
-    startTime: "10:00",
-    endTime: "11:00",
+    title: "Annual School Camp",
+    class: "10A",
+    startDate: "2025-01-20",
+    endDate: "2025-01-23", // 4-day event
   },
 ];
 
-export const announcementsData = [
-  {
-    id: 1,
-    title: "About 4A Math Test",
-    class: "4A",
-    date: "2025-01-01",
-  },
-  {
-    id: 2,
-    title: "About 3A Math Test",
-    class: "3A",
-    date: "2025-01-01",
-  },
-  {
-    id: 3,
-    title: "About 3B Math Test",
-    class: "3B",
-    date: "2025-01-01",
-  },
-  {
-    id: 4,
-    title: "About 6A Math Test",
-    class: "6A",
-    date: "2025-01-01",
-  },
-  {
-    id: 5,
-    title: "About 8C Math Test",
-    class: "8C",
-    date: "2025-01-01",
-  },
-  {
-    id: 6,
-    title: "About 2A Math Test",
-    class: "2A",
-    date: "2025-01-01",
-  },
-  {
-    id: 7,
-    title: "About 4C Math Test",
-    class: "4C",
-    date: "2025-01-01",
-  },
-  {
-    id: 8,
-    title: "About 4B Math Test",
-    class: "4B",
-    date: "2025-01-01",
-  },
-  {
-    id: 9,
-    title: "About 3C Math Test",
-    class: "3C",
-    date: "2025-01-01",
-  },
-  {
-    id: 10,
-    title: "About 1C Math Test",
-    class: "1C",
-    date: "2025-01-01",
-  },
-];
+
+

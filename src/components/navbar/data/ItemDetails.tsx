@@ -10,6 +10,10 @@ import {
   Bus,
   BookA,
   PencilLine,
+  User,
+  UserRoundPen,
+  BookCopy,
+  CalendarDays,
 } from "lucide-react";
 
 export const itemDetails = {
@@ -18,65 +22,101 @@ export const itemDetails = {
     icon: <LayoutDashboard className="w-5 h-5" />,
     desc: "",
     visible: ["admin", "teacher", "student", "parent"],
+    href: "/admin",
   },
   "My Profile": {
     title: "My Profile",
     icon: <User2 className="w-5 h-5" />,
     desc: "View and edit your details.",
     visible: ["admin", "teacher", "student", "parent"],
+    href: "",
   },
   Settings: {
     title: "Settings",
     icon: <Settings2 className="w-5 h-5" />,
     desc: "Manage preferences.",
     visible: ["admin", "teacher"],
+    href: "",
   },
   Academics: {
     title: "Academics",
     icon: <GraduationCap className="w-5 h-5" />,
     desc: "Access courses.",
     visible: ["admin", "teacher", "student"],
+    href: "",
   },
   "Staff / HR": {
     title: "Staff / HR",
     icon: <Users className="w-5 h-5" />,
     desc: "Manage staff.",
     visible: ["admin"],
+    href: "",
   },
   Library: {
     title: "Library",
     icon: <Book className="w-5 h-5" />,
     desc: "Library management.",
     visible: ["admin", "teacher", "student"],
+    href: "",
   },
   Finance: {
     title: "Finance",
     icon: <Wallet className="w-5 h-5" />,
     desc: "Manage school finance.",
+    href: "",
     visible: ["admin"],
   },
   Admission: {
     title: "Admission",
     icon: <UserPlus className="w-5 h-5" />,
     desc: "New student admission.",
+    href: "",
     visible: ["admin"],
   },
   Transport: {
     title: "Transport",
     icon: <Bus className="w-5 h-5" />,
     desc: "Bus and routes.",
+    href: "",
     visible: ["admin", "teacher"],
   },
   "Fee Management": {
     title: "Fee Management",
     icon: <BookA className="w-5 h-5" />,
     desc: "Handle student fees.",
+    href: "",
     visible: ["admin", "teacher"],
   },
   Examination: {
     title: "Examination",
     icon: <PencilLine className="w-5 h-5" />,
     desc: "Manage exams and results.",
-    visible: ["admin", "teacher","student"],
+    href: "",
+    visible: ["admin", "teacher", "student"],
   },
+
+  Events: {
+    title: "Events",
+    icon: <CalendarDays className="w-5 h-5" />,
+    desc: "Manage events.",
+    href: "/list/events",
+    visible: ["admin", "teacher", "student"],
+  },
+
+  Students: {
+    title: "Student",
+    icon: <User className="w-5 h-5" />,
+    desc: "Manage students.",
+    href: "/list/students",
+    visible: ["admin", "teacher"],
+  },
+
+  Teachers: {
+    title: "Teachers",
+    icon: <UserRoundPen className="w-5 h-5" />,
+    desc: "Manage teachers.",
+    href: "",
+    visible: ["admin"],
+  },
+
 };

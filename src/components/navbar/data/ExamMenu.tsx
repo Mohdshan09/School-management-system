@@ -18,8 +18,8 @@ export const examinationMenuItems = [
   },
   {
     icon: <ClipboardList className="w-5 h-5" />,
-    label: "Examination Type",
-    path: "/examination/type",
+    label: "Exams",
+    path: "/list/exams",
   },
   {
     icon: <FilePlus className="w-5 h-5" />,
@@ -45,11 +45,6 @@ export const examinationMenuItems = [
     icon: <PencilLine className="w-5 h-5" />,
     label: "Marks Entry",
     path: "/examination/marks-entry",
-  },
-  {
-    icon: <Users className="w-5 h-5" />,
-    label: "Manage Subjects",
-    path: "/examination/subjects",
   },
   {
     icon: <GraduationCap className="w-5 h-5" />,

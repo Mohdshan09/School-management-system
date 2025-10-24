@@ -1,6 +1,7 @@
 import React from "react";
 import { X, ChevronRight, LayoutDashboard } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { teacherMenuItems } from "./data/TeacherMenu";
 
 export default function Sidebar({
   sidebarOpen,
@@ -10,11 +11,20 @@ export default function Sidebar({
   examinationMenuItems,
 }: any) {
   const router = useRouter();
+
+  const teacherMenu = (item: any) => {
+    router.push(item.href)
+    setSidebarOpen(false);
+  }
+
+  const examinationMenu = (item: any) => {
+    router.push(item.path)
+    setSidebarOpen(false);
+  }
   return (
     <div
-      className={`fixed top-[64px] left-0 h-[calc(100vh-64px)] w-80 bg-white shadow-lg border-r border-gray-200 transform transition-transform duration-300 z-40 ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+      className={`fixed top-[64px] left-0 h-[calc(100vh-64px)] w-80 bg-white shadow-lg border-r border-gray-200 transform transition-transform duration-300 z-40 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
@@ -39,8 +49,8 @@ export default function Sidebar({
         {selectedItem === "Dashboard" && (
           <div className="p-4">
             <button
-            onClick={() => router.push("/admin") }
-             className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-blue-50 rounded-lg border border-gray-200 transition-all">
+              onClick={() => router.push("/admin")}
+              className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-blue-50 rounded-lg border border-gray-200 transition-all">
               <div className="flex items-center space-x-3">
                 <LayoutDashboard className="w-5 h-5 text-blue-600" />
                 <span className="text-sm font-medium text-gray-700">
@@ -56,8 +66,29 @@ export default function Sidebar({
           <div className="p-3 space-y-3">
             {examinationMenuItems.map((item: any, index: number) => (
               <button
+              onClick={() => examinationMenu(item)}
                 key={index}
                 className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-blue-50 rounded-lg transition-all group border border-transparent hover:border-blue-100"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="text-blue-600">{item.icon}</div>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-blue-700">
+                    {item.label}
+                  </span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {selectedItem === "Teachers" && (
+          <div className="p-3 space-y-3">
+            {teacherMenuItems.map((item: any, index: number) => (
+              <button
+                onClick={() => teacherMenu(item)}
+                key={index}
+                className=" border w-full flex items-center justify-between px-3 py-2.5 hover:bg-blue-50 rounded-lg transition-all group border border-transparent hover:border-blue-100"
               >
                 <div className="flex items-center space-x-3">
                   <div className="text-blue-600">{item.icon}</div>
