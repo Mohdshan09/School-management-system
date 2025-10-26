@@ -34,7 +34,7 @@ export const examinationMenuItems = [
   {
     icon: <CreditCardIcon className="w-5 h-5" />,
     label: "Admit Card",
-    path: "/examination/admit-card",
+    path: "/student/admitcard",
   },
   {
     icon: <UserCheck className="w-5 h-5" />,

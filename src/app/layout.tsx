@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "BHN ENGLISH HR SEC SCHOOL DASHBOARD",
   description: "Next.js School Management System",
   icons: {
-    icon: "/logo_02.jpg"
+    icon: "/logoBHN.png"
   }
 };
 

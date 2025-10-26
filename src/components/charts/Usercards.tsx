@@ -4,7 +4,7 @@ const UserCard = ({ type }: { type: string }) => {
   return (
     <div className="myshadow rounded-2xl  bg-white  p-4 flex-1 min-w-[130px]">
       <div className="flex justify-between items-center">
-        <span className="text-[10px] text-blue-600 px-2 py-1 rounded-full text-black">
+        <span className="text-[10px]  px-2 py-1 rounded-full text-black">
           2025/26
         </span>
         <Image src="/more.png" alt="" width={20} height={20} />
