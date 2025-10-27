@@ -5,45 +5,25 @@ import { useMutation } from "@tanstack/react-query";
 
 export default function LoginPage() {
   // form states
-  const [studentId, setStudentId] = useState("");
-  const [password, setPassword] = useState("");
-  const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
-  const [schoolId, setSchoolId] = useState("");
+  const [email, setEmail] = useState("");
 
   const LoginMutation = useMutation({
     mutationFn: async ({
-      studentId,
-      password,
+      email
     }: {
-      studentId: string;
-      password: string;
+      email: string;
     }) => {
       // mock API call — replace with your real endpoint
+      console.log(email)
     },
   });
 
-  const ForgotPasswordMutation = useMutation({
-    mutationFn: async ({
-      resetEmail,
-      schoolId,
-    }: {
-      resetEmail: string;
-      schoolId: string;
-    }) => {
-      //mock API call — replace with your real endpoint
-    },
-  });
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    LoginMutation.mutate({ studentId, password });
   };
 
-  const handleForgotPassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    ForgotPasswordMutation.mutate({ resetEmail, schoolId });
-  };
 
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center p-8 overflow-hidden">
@@ -56,10 +36,10 @@ export default function LoginPage() {
             <div className="relative w-72 h-72">
               {/* Badges */}
               <div className="absolute top-2 right-0 bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-10">
-                2.3M Students
+                Learn
               </div>
               <div className="absolute bottom-12 -left-2 bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-10">
-                834 Schools
+                Excel
               </div>
 
               {/* Central Illustration */}
@@ -219,132 +199,38 @@ export default function LoginPage() {
 
         {/* Right Section - Login Form */}
         <div className="bg-white px-10 py-10 flex flex-col justify-center relative">
-          <div className="absolute top-6 right-6">
-            <button className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-              <svg
-                className="w-4 h-4 text-gray-600"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <circle cx="10" cy="5" r="1.5" />
-                <circle cx="10" cy="10" r="1.5" />
-                <circle cx="10" cy="15" r="1.5" />
-              </svg>
-            </button>
-          </div>
+
 
           <div className="max-w-sm mx-auto w-full">
             {/* CHANGE: Conditional rendering - show forgot password form or login form */}
-            {!isForgotPassword ? (
-              // Login Form
-              <>
-                <Image src={"/logo_02.jpg"} alt="logo" width={60} height={60} />
-                <h2 className="text-gray-600 text-md font-bold mb-8">
-                  BHN ENGLISH HR SEC SCHOOL, Gariaband
-                </h2>
 
-                <div className="space-y-4">
-                  <div>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Enter your student ID"
-                      value={studentId}
-                      onChange={(e) => setStudentId(e.target.value)}
-                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
-                    />
-                  </div>
+            <Image src={"/logo_02.jpg"} alt="logo" width={60} height={60} />
+            <h2 className="text-gray-600 text-md font-bold mb-8">
+              BHN ENGLISH HR SEC SCHOOL, Gariaband
+            </h2>
+            <form>
+            <div className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
+                />
+              </div>
 
-                  <div>
-                    <input
-                      type="password"
-                      required
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
-                    />
-                  </div>
+              <button
+                type="submit"
+                disabled={LoginMutation.isPending}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30 text-sm"
+              >
+                {LoginMutation.isPending ? "Logging in..." : "Send Magic Link"}
+              </button>
+            </div>
+            </form>
 
-                  <button
-                    type="submit"
-                    disabled={LoginMutation.isPending}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30 text-sm"
-                  >
-                    {LoginMutation.isPending ? "Logging in..." : "Login"}
-                  </button>
-
-                  <div className="text-center mt-4">
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsForgotPassword(true);
-                      }}
-                      className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                    >
-                      Forgot Password?
-                    </a>
-                  </div>
-                </div>
-              </>
-            ) : (
-              // CHANGE: Forgot Password Form
-              <>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  Forgot Password
-                </h2>
-                <p className="text-gray-600 text-sm mb-8">
-                  Enter your email or student ID to receive a password reset
-                  link.
-                </p>
-
-                <div className="space-y-4">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Enter your email"
-                      value={resetEmail}
-                      onChange={(e) => setResetEmail(e.target.value)}
-                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Enter your school id"
-                      value={schoolId}
-                      onChange={(e) => setSchoolId(e.target.value)}
-                      className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-full focus:border-blue-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={ForgotPasswordMutation.isPending}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-full transition-colors shadow-lg shadow-blue-600/30 text-sm"
-                  >
-                    {ForgotPasswordMutation.isPending
-                      ? "Sending..."
-                      : "Send Link to Change Password"}
-                  </button>
-
-                  <div className="text-center mt-4">
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsForgotPassword(false);
-                      }}
-                      className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                    >
-                      Back to Login
-                    </a>
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         </div>
       </div>

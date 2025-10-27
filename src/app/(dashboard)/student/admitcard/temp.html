@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admit Card Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            cambria: ['Cambria', 'Caladea', 'Georgia', 'Times New Roman', 'serif'],
+            arya: ['Arya', 'Caldea', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Arya:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caladea&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    @media print {
+      body>*:not(.print-container) {
+        display: none;
+      }
+
+      .print-container {
+        display: flex !important;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        flex-direction: column;
+      }
+
+      .admit-card-container {
+        page-break-after: always;
+        border: 1px solid black;
+      }
+
+      .admit-card-container:last-child {
+        page-break-after: avoid;
+      }
+
+      .noprint {
+        display: none;
+      }
+
+      #admitCardDisplay {
+        margin-top: 0;
+        padding: 0;
+      }
+
+      .pageDiv {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        page-break-after: always;
+        height: 310mm;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 flex flex-col items-center min-h-screen font-sans px-8">
+  <div class="container max-w-3xl w-full bg-white p-8 md:p-6 rounded-2xl shadow-xl flex flex-col gap-6">
+    <h1 class="text-3xl font-bold text-center text-gray-800">
+      Admit Card Generator
+    </h1>
+
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
+        <label for="schoolName" class="font-semibold text-gray-700 mb-1">School Name:</label>
+        <input type="text" id="schoolName" placeholder="e.g., BHN English Hr Sec School"
+          class="p-3 border border-gray-300 rounded-lg" />
+      </div>
+      <div class="flex flex-col">
+        <label for="schoolAddress" class="font-semibold text-gray-700 mb-1">School Address:</label>
+        <input type="text" id="schoolAddress" placeholder="e.g., Shanti Nagar, Raipur, Chhattisgarh"
+          class="p-3 border border-gray-300 rounded-lg" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="examName" class="font-semibold text-gray-700 mb-1">Exam Name:</label>
+        <input type="text" id="examName" placeholder="e.g., Quarterly Exam Session 2025-26"
+          class="p-3 border border-gray-300 rounded-lg" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="studentsFile" class="font-semibold text-gray-700 mb-1">Upload Students File (.xlsx):</label>
+        <input type="file" id="studentsFile" accept=".xlsx, .xls" class="p-3 border border-gray-300 rounded-lg" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="timetableFile" class="font-semibold text-gray-700 mb-1">Upload Timetable File (.xlsx):</label>
+        <input type="file" id="timetableFile" accept=".xlsx, .xls" class="p-3 border border-gray-300 rounded-lg" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="logoFile" class="font-semibold text-gray-700 mb-1">Upload School Logo (Optional):</label>
+        <input type="file" id="logoFile" accept="image/*" class="p-3 border border-gray-300 rounded-lg" />
+      </div>
+
+      <div class="flex flex-col">
+        <label for="studentSelect" class="font-semibold text-gray-700 mb-1">Select a Student:</label>
+        <select id="studentSelect" disabled
+          class="p-3 border border-gray-300 rounded-lg bg-gray-50 disabled:bg-gray-200">
+          <option value="" disabled selected>-- Select a student --</option>
+          <option value="all">All Students</option>
+        </select>
+      </div>
+
+      <button id="generateBtn" disabled
+        class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed">
+        Generate Admit Card(s)
+      </button>
+    </div>
+  </div>
+
+  <div id="admitCardDisplay" class="container max-w-3xl w-full mt-8 hidden print-container"></div>
+
+  <script>
+    let studentsData = [];
+    let timetableData = [];
+    let logoData = null;
+    const isHindi = text => /[\u0900-\u097F]/.test(text);
+
+
+    const studentsFile = document.getElementById("studentsFile");
+    const timetableFile = document.getElementById("timetableFile");
+    const logoFile = document.getElementById("logoFile");
+    const studentSelect = document.getElementById("studentSelect");
+    const generateBtn = document.getElementById("generateBtn");
+    const admitCardDisplay = document.getElementById("admitCardDisplay");
+
+    const schoolNameInput = document.getElementById("schoolName");
+    const schoolAddressInput = document.getElementById("schoolAddress");
+    const examNameInput = document.getElementById("examName");
+
+    const checkFilesLoaded = () => {
+      if (studentsData.length > 0 && timetableData.length > 0) {
+        generateBtn.disabled = false;
+        studentSelect.disabled = false;
+      }
+    };
+
+    // Function to read an Excel file
+    const readExcelFile = (file, callback) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet);
+          callback(json);
+        } catch (error) {
+          console.error("Error reading Excel file:", error);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+
+    // Function to read an image file as a data URL
+    const readImageFile = (file, callback) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        callback(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // Event listeners for file inputs
+    studentsFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        readExcelFile(file, (data) => {
+          studentsData = data;
+          populateStudentSelect(studentsData);
+          checkFilesLoaded();
+        });
+      }
+    });
+
+    timetableFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        readExcelFile(file, (data) => {
+          timetableData = data;
+          checkFilesLoaded();
+        });
+      }
+    });
+
+    logoFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        readImageFile(file, (dataUrl) => {
+          logoData = dataUrl;
+        });
+      } else {
+        logoData = null;
+      }
+    });
+
+    const populateStudentSelect = (students) => {
+      studentSelect.innerHTML =
+        '<option value="" disabled selected>-- Select a student --</option><option value="all">All Students</option>';
+      students.forEach((student) => {
+        const option = document.createElement("option");
+        option.value = student.RollNo;
+        option.textContent = `${student.Name} (${student.RollNo})`;
+        studentSelect.appendChild(option);
+      });
+    };
+
+    const generateAdmitCardHtml = (student) => {
+      // Read the dynamic values from the new input fields
+      const schoolName = schoolNameInput.value;
+      const schoolAddress = schoolAddressInput.value;
+      const examName = examNameInput.value;
+
+      // Validation for the new fields
+      if (!schoolName || !examName) {
+        return '<div class="text-center text-red-500">Please enter a School Name and an Exam Name.</div>';
+      }
+
+      const studentTimetable = timetableData.filter(
+        (exam) => exam.Class == student.Class
+      );
+
+      if (!studentTimetable || studentTimetable.length === 0) {
+        return '<div class="text-center text-red-500">No timetable data found for this student\'s class. Please check your timetable file.</div>';
+      }
+
+      const getDayOfWeek = (dateString) => {
+        const parts = dateString.split("-");
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const year = parseInt(parts[2], 10);
+          const date = new Date(year, month, day);
+          if (!isNaN(date.getTime())) {
+            const days = [
+              "Sunday",
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+            ];
+            return days[date.getDay()];
+          }
+        }
+        return "Invalid Date";
+      };
+
+      const logoElement = logoData
+        ? `<img src="${logoData}" alt="School Logo" class="h-14 mr-3">`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap text-indigo-600 mr-3"><path d="M21.42 10.98V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4.5a2.5 2.5 0 0 1 2.5 2.5v.5"/><path d="M12 2v20"/><path d="M12 10h.01"/><path d="M18 4h-2"/><path d="M18 10h-2"/><path d="M18 16h-2"/><path d="M18 20h-2"/><path d="M18 4h-2"/><path d="M18 10h-2"/><path d="M18 16h-2"/><path d="M18 20h-2"/></svg>`;
+
+      let timetableHtml = `<table class="w-full border-collapse mt-4 text-sm">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 p-2 text-left bg-gray-100 font-semibold w-1/4">Date</th>
+                    <th class="border border-gray-300 p-2 text-left bg-gray-100 font-semibold w-1/4">Day</th>
+                    <th class="border border-gray-300 p-2 text-left bg-gray-100 font-semibold w-1/2">Subject</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+      studentTimetable.forEach((exam) => {
+        const dayOfWeek = getDayOfWeek(exam.Date);
+        timetableHtml += `<tr>
+                <td class="border border-gray-300 p-2">${exam.Date}</td>
+                <td class="border border-gray-300 p-2">${dayOfWeek}</td>
+                <td class="border border-gray-300 p-2">${exam.Subject}</td>
+                </tr>`;
+      });
+      timetableHtml += "</tbody></table>";
+
+      return `
+            <div class="admit-card-container  p-6 border border-gray-700 " style="width: 210mm;">
+                <div class="flex items-center mb-4 pb-2 border-b-2 border-gray-600">
+                    ${logoElement}
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 ${isHindi(schoolName) ? 'font-arya' : 'font-cambria'}">${schoolName}</h2>
+                        <div class="flex justify-between" style=" width: 180mm;">
+                          <div>
+                            <span class="text-xs text-gray-700 italic ${isHindi(schoolAddress) ? 'font-arya' : 'font-inter'}"> ${schoolAddress}</span>
+                          </div>
+                          <div>
+                            <p class="text-xl text-gray-800 font-cambria">${examName}</p>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-y-1 gap-x-4 text-sm">
+                    <p><strong class="text-gray-700">Name:</strong> ${student.Name.toUpperCase()}</p>
+                    <p><strong class="text-gray-700">Roll No:</strong> ${student.RollNo}</p>
+                    <p><strong class="text-gray-700">Father's Name:</strong> ${student["Father's Name"] ?? " "}</p>
+                    <p><strong class="text-gray-700">Class:</strong> ${student.Class}</p>
+                </div>
+                <div class="flex justify-between items-center mt-4 mb-2">
+                    <h4 class="text-sm font-semibold text-gray-700">Examination Time Table</h4>
+                    <p class="text-xs text-gray-500">Time: 10:30 AM to 01:30 PM</p>
+                </div>
+                <div class="admit-card-timetable">
+                    ${timetableHtml}
+                </div>
+                <div class="text-right mt-6">
+                    <p class="text-sm text-gray-700 font-semibold">Principal's Signature: ___________________</p>
+                </div>
+            </div>
+        `;
+    };
+    generateBtn.addEventListener("click", () => {
+      // Validate new input fields
+      if (!schoolNameInput.value || !examNameInput.value) {
+        alert("Please enter both the School Name and Exam Name.");
+        return;
+      }
+
+      const selectedValue = studentSelect.value;
+      let studentsToProcess = [];
+
+      if (selectedValue === "all") {
+        studentsToProcess = studentsData;
+      } else if (selectedValue !== "") {
+        const selectedStudent = studentsData.find(
+          (student) => String(student.RollNo) === selectedValue
+        );
+        if (selectedStudent) {
+          studentsToProcess = [selectedStudent];
+        } else {
+          console.error("Student not found. Please check your student file.");
+          return;
+        }
+      } else {
+        console.error("Please select a student before generating.");
+        return;
+      }
+
+      admitCardDisplay.innerHTML = "";
+      let validAdmitCards = 0;
+      let cardsArray = [];
+      studentsToProcess.forEach((student) => {
+        const admitCardHtml = generateAdmitCardHtml(student);
+        if (admitCardHtml.includes("No timetable data found")) {
+          console.warn(
+            `Skipping generation for ${student.Name} due to missing timetable.`
+          );
+          return;
+        }
+
+        const cardDiv = document.createElement("div");
+        cardDiv.innerHTML = admitCardHtml;
+        cardsArray.push(cardDiv);
+        validAdmitCards++;
+      });
+      for (let i = 0; i < validAdmitCards; i += 2) {
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "pageDiv";
+        pageDiv.appendChild(cardsArray[i]);
+        if (i + 1 < validAdmitCards) {
+          pageDiv.appendChild(cardsArray[i + 1]);
+        }
+        admitCardDisplay.appendChild(pageDiv);
+
+      }
+
+      if (validAdmitCards > 0) {
+        admitCardDisplay.classList.remove("hidden");
+
+        const printBtn = document.createElement("button");
+        printBtn.textContent = "Print Admit Card(s)";
+        printBtn.className =
+          "noprint bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 mt-4";
+        printBtn.onclick = () => window.print();
+
+        if (!document.getElementById("print-button")) {
+          printBtn.id = "print-button";
+          admitCardDisplay.appendChild(printBtn);
+        }
+      } else {
+        console.error(
+          "No valid admit cards could be generated. Please check your data."
+        );
+        admitCardDisplay.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+
+</html>

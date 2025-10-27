@@ -5,16 +5,30 @@ import { Student } from "../types";
 
 export default function SelectStudentStep({
   students,
-  selectedStudent,
+  selectedStudents,
   onSelect,
 }: {
   students: Student[];
-  selectedStudent: Student | null;
-  onSelect: (s: Student) => void;
+  selectedStudents: Student[];
+  onSelect: (selected: Student[]) => void;
 }) {
+  const handleToggle = (student: Student) => {
+    const isSelected = selectedStudents.some(
+      (s) => s.rollNumber === student.rollNumber
+    );
+
+    if (isSelected) {
+      // Remove from selection
+      onSelect(selectedStudents.filter((s) => s.rollNumber !== student.rollNumber));
+    } else {
+      // Add to selection
+      onSelect([...selectedStudents, student]);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-4">Select Student</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-4">Select Students</h2>
       <table className="w-full border">
         <thead className="bg-gray-50">
           <tr>
@@ -24,42 +38,49 @@ export default function SelectStudentStep({
           </tr>
         </thead>
         <tbody>
-          {students.map((student) => (
-            <tr
-              key={student.rollNumber}
-              onClick={() => onSelect(student)}
-              className={`cursor-pointer ${
-                selectedStudent?.rollNumber === student.rollNumber
-                  ? "bg-indigo-50"
-                  : ""
-              }`}
-            >
-              <td className="px-4 py-2">
-                <input
-                  type="radio"
-                  name="student"
-                  checked={selectedStudent?.rollNumber === student.rollNumber}
-                  readOnly
-                />
-              </td>
-              <td className="px-4 py-2">{student.name}</td>
-              <td className="px-4 py-2">{student.rollNumber}</td>
-            </tr>
-          ))}
+          {students.map((student) => {
+            const isChecked = selectedStudents.some(
+              (s) => s.rollNumber === student.rollNumber
+            );
+            return (
+              <tr
+                key={student.rollNumber}
+                onClick={() => handleToggle(student)}
+                className={`cursor-pointer ${
+                  isChecked ? "bg-indigo-50" : ""
+                }`}
+              >
+                <td className="px-4 py-2">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() => handleToggle(student)}
+                  />
+                </td>
+                <td className="px-4 py-2">{student.name}</td>
+                <td className="px-4 py-2">{student.rollNumber}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      {selectedStudent && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-center gap-3">
-          <CheckCircle className="text-indigo-600" size={20} />
-          <div>
+      {selectedStudents.length > 0 && (
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+          <div className="flex items-center gap-3 mb-2">
+            <CheckCircle className="text-indigo-600" size={20} />
             <p className="text-sm font-medium text-indigo-900">
-              Selected: {selectedStudent.name}
-            </p>
-            <p className="text-xs text-indigo-700">
-              Roll: {selectedStudent.rollNumber}
+              Selected {selectedStudents.length} student
+              {selectedStudents.length > 1 ? "s" : ""}
             </p>
           </div>
+          <ul className="text-xs text-indigo-700 space-y-1">
+            {selectedStudents.map((s) => (
+              <li key={s.rollNumber}>
+                {s.name} — Roll: {s.rollNumber}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

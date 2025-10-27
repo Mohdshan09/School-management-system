@@ -12,7 +12,7 @@ import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 
 export default function AdminAdmitCardSystem() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [schoolInfo, setSchoolInfo] = useState({ name: "", address: "" });
+  const [schoolInfo, setSchoolInfo] = useState({ name: "BHN School", address: "Raipur" });
   const [examType, setExamType] = useState("");
   const [studentsData, setStudentsData] = useState<Student[]>([]);
   const [timetableData, setTimetableData] = useState<TimetableItem[]>([]);

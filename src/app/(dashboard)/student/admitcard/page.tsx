@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   User,
   Calendar,
@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   AlertCircle,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminAdmitCardSystem() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -20,19 +21,26 @@ export default function AdminAdmitCardSystem() {
     name: "",
     address: "",
   });
+
+  const printRef = useRef<HTMLDivElement>(null);
   const [examType, setExamType] = useState("");
   const [studentsData, setStudentsData] = useState<Student[]>([]);
   const [timetableData, setTimetableData] = useState<
     { date: string; time: string; subject: string; code: string }[]
   >([]);
-  const [selectedStudent, setSelectedStudent] = useState<{
+
+  type StudentI = {
     rollNumber: string;
     name: string;
     class: string;
     section: string;
     dob: string;
     photo: null | string;
-  } | null>(null);
+  };
+
+  const [selectedStudent, setSelectedStudent] = useState<StudentI[]>([]);
+
+
   const [showAdmitCard, setShowAdmitCard] = useState(false);
 
   const handleSchoolInfoChange = (e: any) => {
@@ -140,8 +148,20 @@ export default function AdminAdmitCardSystem() {
   }
 
   const handleStudentSelect = (student: Student) => {
-    setSelectedStudent(student);
+    setSelectedStudent((prevSelected) => {
+      const isSelected = prevSelected.some(
+        (s) => s.rollNumber === student.rollNumber
+      );
+      if (isSelected) {
+        // Remove student if already selected
+        return prevSelected.filter((s) => s.rollNumber !== student.rollNumber);
+      } else {
+        // Add student if not selected
+        return [...prevSelected, student];
+      }
+    });
   };
+
 
   const generateAdmitCard = () => {
     if (selectedStudent) {
@@ -175,7 +195,39 @@ export default function AdminAdmitCardSystem() {
   };
 
   const handlePrint = () => {
-    window.print();
+    if (!printRef.current) return;
+
+    const printContents = printRef.current.innerHTML;
+    const newWindow = window.open("", "", "width=900,height=700");
+
+    if (newWindow) {
+      newWindow.document.write(`
+      <html>
+        <head>
+          <title>Admit Card</title>
+          <style>
+            body { font-family: sans-serif; padding: 20px; background: white; color: black; }
+            @media print {
+              body { -webkit-print-color-adjust: exact; }
+              .no-print { display: none !important; }
+            }
+            table, th, td { border-collapse: collapse; border: 1px solid #ddd; padding: 6px; }
+            th { background: #f9f9f9; }
+            h3, h4 { margin: 0; }
+          </style>
+        </head>
+        <body>
+          ${printContents}
+        </body>
+      </html>
+    `);
+      newWindow.document.close();
+      newWindow.focus();
+      newWindow.print();
+      newWindow.close();
+    }
+
+
   };
 
   const handleDownload = () => {
@@ -205,15 +257,8 @@ export default function AdminAdmitCardSystem() {
             </button>
             <div className="flex gap-4">
               <button
-                onClick={handleDownload}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
-              >
-                <Download size={20} />
-                Download PDF
-              </button>
-              <button
                 onClick={handlePrint}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                className="px-6 py-2 border shadow-md rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
               >
                 <Printer size={20} />
                 Print
@@ -221,239 +266,104 @@ export default function AdminAdmitCardSystem() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-xl p-8 border-4 border-indigo-600">
-            <div className="border-b-4 border-indigo-600 pb-6 mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
-                    <School className="text-white" size={32} />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
-                      {schoolInfo.name}
-                    </h1>
-                    <p className="text-sm text-gray-600">
-                      {schoolInfo.address}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">Issue Date</p>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {new Date().toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 text-center">
-                <h2 className="text-xl font-bold text-indigo-600 uppercase tracking-wide">
-                  Examination Admit Card
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">{examType}</p>
-              </div>
-            </div>
+          {showAdmitCard && (
+            <div ref={printRef} className="space-y-10 print:bg-white print:text-black">
+              {selectedStudent.map((student) => (
+                <div
+                  id="admit-card"
+                  key={student.rollNumber}
+                  className="border rounded-xl shadow-md p-6 bg-white"
+                >
+                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center"> <Image src={"/logoBHN.png"} alt="logo" width={100} height={100} /> </div>
+                  <div className="text-right"> <p className="text-sm text-gray-600">Issue Date</p> <p className="text-sm font-semibold text-gray-900"> {new Date().toLocaleDateString()} </p> <p className="mt-5 text-sm font-semibold text-gray-600"> Time - 10:00 to 12:00 </p> </div>
 
-            <div className="grid grid-cols-3 gap-6 mb-6">
-              <div className="col-span-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="border-b border-gray-200 pb-2">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">
-                      Student Name
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 mt-1">
-                      {selectedStudent.name}
-                    </p>
-                  </div>
-                  <div className="border-b border-gray-200 pb-2">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">
-                      Roll Number
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 mt-1">
-                      {selectedStudent.rollNumber}
-                    </p>
-                  </div>
-                  <div className="border-b border-gray-200 pb-2">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">
-                      Class
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 mt-1">
-                      {selectedStudent.class}
-                    </p>
-                  </div>
-                  <div className="border-b border-gray-200 pb-2">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">
-                      Section
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 mt-1">
-                      {selectedStudent.section}
-                    </p>
-                  </div>
-                  <div className="border-b border-gray-200 pb-2">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">
-                      Date of Birth
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 mt-1">
-                      {selectedStudent.dob}
-                    </p>
-                  </div>
-                  <div className="border-b border-gray-200 pb-2">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">
-                      Exam Center
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 mt-1">
-                      Main School Building, Hall A
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-32 h-40 bg-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-300">
-                  <User className="text-gray-400" size={48} />
-                </div>
-                <p className="text-xs text-gray-500 text-center">
-                  Student Photo
-                </p>
-              </div>
-            </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 text-center">
+                    {schoolInfo.name} - {examType}
+                  </h3>
 
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 bg-indigo-50 p-3 rounded-lg">
-                Examination Schedule
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                        Date
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                        Time
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                        Subject
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                        Subject Code
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {timetableData.map((subject, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
-                          {subject.date}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
-                          {subject.time}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900 font-medium">
-                          {subject.subject}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-3 text-sm text-gray-600">
-                          {subject.code}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
 
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-3 bg-indigo-50 p-3 rounded-lg">
-                Important Instructions
-              </h3>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2 text-sm text-gray-700">
-                  <CheckCircle
-                    className="text-green-600 flex-shrink-0 mt-0.5"
-                    size={16}
-                  />
-                  <span>
-                    Students must reach the examination center 30 minutes before
-                    the exam starts
-                  </span>
-                </li>
-                <li className="flex items-start gap-2 text-sm text-gray-700">
-                  <CheckCircle
-                    className="text-green-600 flex-shrink-0 mt-0.5"
-                    size={16}
-                  />
-                  <span>Carry this admit card to the examination center</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm text-gray-700">
-                  <CheckCircle
-                    className="text-green-600 flex-shrink-0 mt-0.5"
-                    size={16}
-                  />
-                  <span>
-                    Mobile phones and electronic devices are strictly prohibited
-                  </span>
-                </li>
-                <li className="flex items-start gap-2 text-sm text-gray-700">
-                  <CheckCircle
-                    className="text-green-600 flex-shrink-0 mt-0.5"
-                    size={16}
-                  />
-                  <span>Bring your own stationery items</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm text-gray-700">
-                  <CheckCircle
-                    className="text-green-600 flex-shrink-0 mt-0.5"
-                    size={16}
-                  />
-                  <span>Students must carry a valid ID proof</span>
-                </li>
-              </ul>
-            </div>
 
-            <div className="border-t-2 border-gray-300 pt-6 mt-6">
-              <div className="grid grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="h-16 flex items-end justify-center mb-2">
-                    <div className="w-32 h-12 bg-gray-100 rounded flex items-center justify-center border-2 border-gray-300">
-                      <span className="text-xs text-gray-400">
-                        Student Signature
-                      </span>
+                  <div className="grid grid-cols-3 gap-6 mb-6">
+                    <div className="col-span-2">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-gray-500">Student Name</p>
+                          <p className="text-base font-semibold text-gray-900">
+                            {student.name}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Roll Number</p>
+                          <p className="text-base font-semibold text-gray-900">
+                            {student.rollNumber}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Class</p>
+                          <p className="text-base font-semibold text-gray-900">
+                            {student.class}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Section</p>
+                          <p className="text-base font-semibold text-gray-900">
+                            {student.section}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Date of Birth</p>
+                          <p className="text-base font-semibold text-gray-900">
+                            {student.dob}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Exam Center</p>
+                          <p className="text-base font-semibold text-gray-900">
+                            Main School Building, Hall A
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-32 h-40 bg-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-300">
+                        <User className="text-gray-400" size={48} />
+                      </div>
+                      <p className="text-xs text-gray-500 text-center">Student Photo</p>
                     </div>
                   </div>
-                  <p className="text-xs font-semibold text-gray-700 border-t border-gray-400 pt-1 inline-block px-4">
-                    Student Signature
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="h-16 flex items-end justify-center mb-2">
-                    <div className="w-32 h-12 bg-gray-100 rounded flex items-center justify-center border-2 border-gray-300">
-                      <span className="text-xs text-gray-400">
-                        Invigilator Sign
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-xs font-semibold text-gray-700 border-t border-gray-400 pt-1 inline-block px-4">
-                    Invigilator Signature
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="h-16 flex items-end justify-center mb-2">
-                    <p className="text-sm font-bold text-gray-900">Principal</p>
-                  </div>
-                  <p className="text-xs font-semibold text-gray-700 border-t border-gray-400 pt-1 inline-block px-4">
-                    Principal Signature
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            <div className="mt-6 text-center">
-              <div className="inline-block bg-gray-100 px-6 py-2 rounded-lg border-2 border-dashed border-gray-400">
-                <p className="text-xs text-gray-600">Verification Code</p>
-                <p className="text-sm font-mono font-bold text-gray-900 tracking-wider">
-                  {selectedStudent.rollNumber}-2025-
-                  {Math.random().toString(36).substring(2, 8).toUpperCase()}
-                </p>
-              </div>
+                  {/* Timetable Section */}
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-gray-800 mb-2 text-sm">
+                      Examination Timetable
+                    </h4>
+                    <table className="w-full text-xs border border-gray-200">
+                      <thead className="bg-gray-100">
+                        <tr>
+                          <th className="p-2 text-left">Date</th>
+                          <th className="p-2 text-left">Time</th>
+                          <th className="p-2 text-left">Subject</th>
+                          <th className="p-2 text-left">Code</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {timetableData.map((exam, idx) => (
+                          <tr key={idx} className="border-t">
+                            <td className="p-2">{exam.date}</td>
+                            <td className="p-2">{exam.time}</td>
+                            <td className="p-2">{exam.subject}</td>
+                            <td className="p-2">{exam.code}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+
         </div>
       </div>
     );
@@ -480,31 +390,28 @@ export default function AdminAdmitCardSystem() {
               <div key={step.number} className="flex items-center flex-1">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm ${
-                      currentStep >= step.number
-                        ? "bg-indigo-600 text-white"
-                        : "bg-gray-200 text-gray-500"
-                    }`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm ${currentStep >= step.number
+                      ? "bg-indigo-600 text-white"
+                      : "bg-gray-200 text-gray-500"
+                      }`}
                   >
                     {step.number}
                   </div>
                   <p
-                    className={`text-xs mt-2 text-center ${
-                      currentStep >= step.number
-                        ? "text-indigo-600 font-medium"
-                        : "text-gray-500"
-                    }`}
+                    className={`text-xs mt-2 text-center ${currentStep >= step.number
+                      ? "text-indigo-600 font-medium"
+                      : "text-gray-500"
+                      }`}
                   >
                     {step.title}
                   </p>
                 </div>
                 {idx < steps.length - 1 && (
                   <div
-                    className={`flex-1 h-1 mx-2 ${
-                      currentStep > step.number
-                        ? "bg-indigo-600"
-                        : "bg-gray-200"
-                    }`}
+                    className={`flex-1 h-1 mx-2 ${currentStep > step.number
+                      ? "bg-indigo-600"
+                      : "bg-gray-200"
+                      }`}
                   />
                 )}
               </div>
@@ -790,20 +697,20 @@ export default function AdminAdmitCardSystem() {
                       {studentsData.map((student, idx) => (
                         <tr
                           key={idx}
-                          className={`border-b hover:bg-gray-50 cursor-pointer ${
-                            selectedStudent?.rollNumber === student.rollNumber
-                              ? "bg-indigo-50"
-                              : ""
-                          }`}
+                          className={`border-b hover:bg-gray-50 cursor-pointer ${selectedStudent[0]?.rollNumber === student.rollNumber
+                            ? "bg-indigo-50"
+                            : ""
+                            }`}
                           onClick={() => handleStudentSelect(student)}
                         >
                           <td className="px-4 py-3">
                             <input
-                              type="radio"
+                              type="checkbox"
                               name="student"
                               checked={
-                                selectedStudent?.rollNumber ===
-                                student.rollNumber
+                                selectedStudent.some(
+                                  (s) => s.rollNumber === student.rollNumber
+                                )
                               }
                               onChange={() => handleStudentSelect(student)}
                               className="w-4 h-4 text-indigo-600"
@@ -834,11 +741,11 @@ export default function AdminAdmitCardSystem() {
                     <CheckCircle className="text-indigo-600" size={20} />
                     <div>
                       <p className="text-sm font-medium text-indigo-900">
-                        Student Selected: {selectedStudent.name}
+                        Student Selected: {selectedStudent[0]?.name}
                       </p>
                       <p className="text-xs text-indigo-700 mt-1">
-                        Roll Number: {selectedStudent.rollNumber} | Class:{" "}
-                        {selectedStudent.class}
+                        Roll Number: {selectedStudent[0]?.rollNumber} | Class:{" "}
+                        {selectedStudent[0]?.class}
                       </p>
                     </div>
                   </div>
@@ -851,11 +758,10 @@ export default function AdminAdmitCardSystem() {
             <button
               onClick={prevStep}
               disabled={currentStep === 1}
-              className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${
-                currentStep === 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-gray-600 text-white hover:bg-gray-700"
-              }`}
+              className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${currentStep === 1
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-gray-700"
+                }`}
             >
               <ChevronLeft size={20} />
               Previous
@@ -865,11 +771,10 @@ export default function AdminAdmitCardSystem() {
               <button
                 onClick={nextStep}
                 disabled={!canProceed()}
-                className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${
-                  canProceed()
-                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
+                className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${canProceed()
+                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  }`}
               >
                 Next
                 <ChevronRight size={20} />
@@ -878,11 +783,10 @@ export default function AdminAdmitCardSystem() {
               <button
                 onClick={generateAdmitCard}
                 disabled={!canProceed()}
-                className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${
-                  canProceed()
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
+                className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${canProceed()
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  }`}
               >
                 <FileText size={20} />
                 Generate Admit Card
